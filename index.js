@@ -48,4 +48,27 @@ app.get("/", async (req, res) => {
   }
 });
 
+app.delete("/:id", async (req, res) => {
+  const id = req.params.id;
+  try {
+    const deletedDocument = await SavedNews.findByIdAndDelete(id);
+
+    if (!deletedDocument) {
+      // If document with the given ID does not exist
+      return res.status(404).json({ message: "Document not found" });
+    }
+
+    // If the document was successfully deleted
+    res.json({ message: "Document deleted successfully" });
+
+  } catch (error) {
+    // Handle errors
+
+    console.error("Error deleting document:", error);
+
+    res.status(500).json({ message: "Internal server error" });
+    
+  }
+});
+
 app.listen(port, () => `Running on port ${port}`);
