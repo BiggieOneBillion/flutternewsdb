@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const DBconnect = require("./db");
 const SavedNews = require("./model/newModel");
+const Users = require("./model/userRegistration");
 
 const app = express();
 
@@ -12,6 +13,18 @@ app.use(bodyParser.json());
 
 //CONNECT TO DB
 DBconnect();
+
+
+app.get("/", async (req, res) => {
+  try {
+    const news = await SavedNews.find();
+    // Send a response with the retrieved user data
+    res.json(news);
+  } catch (error) {
+    // Send an error response if there's an issue
+    res.status(500).json({ message: error.message });
+  }
+});
 
 app.post("/", async (req, res) => {
   try {
@@ -37,11 +50,21 @@ app.post("/", async (req, res) => {
   }
 });
 
-app.get("/", async (req, res) => {
+app.post("/user", async (req, res) => {
+  const data = await req.body;
   try {
-    const news = await SavedNews.find();
-    // Send a response with the retrieved user data
-    res.json(news);
+    // Create a new user document
+    const user = new Users({
+      firstname: data.firstname,
+      lastname: data.lastname,
+      email: data.email,
+      password: data.password,
+    });
+    // Save the user document to the database
+    const savedUser = await user.save();
+
+    //Send a response indicating success
+    res.status(201).json(savedUser);
   } catch (error) {
     // Send an error response if there's an issue
     res.status(500).json({ message: error.message });
@@ -60,14 +83,12 @@ app.delete("/:id", async (req, res) => {
 
     // If the document was successfully deleted
     res.json({ message: "Document deleted successfully" });
-
   } catch (error) {
     // Handle errors
 
     console.error("Error deleting document:", error);
 
     res.status(500).json({ message: "Internal server error" });
-    
   }
 });
 

@@ -29,6 +29,7 @@ const newsSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'Users', required: true },
 });
 
 const SavedNews = mongoose.model('SavedNews', newsSchema);
