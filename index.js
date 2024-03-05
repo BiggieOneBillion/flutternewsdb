@@ -30,6 +30,7 @@ app.post("/", async (req, res) => {
   try {
     // Create a new user document
     const news = new SavedNews({
+      user: req.body.user,
       author: req.body.author,
       content: req.body.content,
       description: req.body.description,
@@ -70,6 +71,8 @@ app.post("/user", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
+// app.get('/user',)
 
 app.delete("/:id", async (req, res) => {
   const id = req.params.id;
