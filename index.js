@@ -14,7 +14,6 @@ app.use(bodyParser.json());
 //CONNECT TO DB
 DBconnect();
 
-
 app.get("/", async (req, res) => {
   try {
     const news = await SavedNews.find();
@@ -72,7 +71,18 @@ app.post("/user", async (req, res) => {
   }
 });
 
-// app.get('/user',)
+app.get("/user/:id", async (req, res) => {
+  try {
+    const savedNews = await SavedNews.find({ user: req.params.id }).exec();
+    if (!savedNews || savedNews.length == 0) {
+      res.status(400).json({ message: "No result" });
+    }
+    res.json(savedNews);
+  } catch (error) {
+    // Send an error response if there's an issue
+    res.status(500).json({ message: error.message });
+  }
+});
 
 app.delete("/:id", async (req, res) => {
   const id = req.params.id;
