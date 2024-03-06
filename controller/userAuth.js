@@ -21,30 +21,25 @@ exports.createUser = async (req, res) => {
   }
 };
 
-
-
 exports.logInUser = async (req, res) => {
-
   const data = await req.body;
 
   try {
+    const response = await Users.findOne({ email: data.email });
 
-    const response = await Users.findOne({email: data.email});
-
-    if(response){ // If it returns a value
-       if(response.password === data.password){ // If password stored in db is the same as the one the user provides then the login process is successful!!
-          res.status(200).json({message: 'Successful!!'})
-       } else {
-          res.status(400).json({message: 'Password Is Incorrect'})
-       }
+    if (response) {
+      // If it returns a value
+      if (response.password === data.password) {
+        // If password stored in db is the same as the one the user provides then the login process is successful!!
+        res.status(200).json({ message: "Successful!!" });
+      } else {
+        res.status(400).json({ message: "Password Is Incorrect" });
+      }
+    } else {
+      res.status(400).json({ message: "user does not exit" });
     }
-
-   res.status(400).json({message: 'user does not exit'})
-
   } catch (error) {
-
     // Send an error response if there's an issue
     res.status(500).json({ message: error.message });
-
   }
 };
