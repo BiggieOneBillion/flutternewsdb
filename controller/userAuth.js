@@ -34,8 +34,12 @@ exports.logInUser = async (req, res) => {
     if(response){ // If it returns a value
        if(response.password === data.password){ // If password stored in db is the same as the one the user provides then the login process is successful!!
           res.status(200).json({message: 'Successful!!'})
+       } else {
+          res.status(400).json({message: 'Password Is Incorrect'})
        }
     }
+
+   res.status(400).json({message: 'user does not exit'})
 
   } catch (error) {
 
